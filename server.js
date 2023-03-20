@@ -2,20 +2,26 @@ const express = require("express");
 // const morgan = require("morgan");
 const createError = require("http-errors");
 const morgan = require("morgan");
+const { verifyAccessToken } = require("./Helpers/jwt");
 const authRouter = require("./Routers/Auth/auth");
+// connect dotenv
 require("dotenv").config();
+// connect mongodb
+require("./Helpers/init_mongodb");
 
 // set up app
 const app = express();
 const PORT = process.env.PORT || 3001;
 app.use(morgan("dev"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // create init port server
 app.listen(PORT, () => {
   console.log(`Server is running in port ${PORT}`);
 });
 
-app.get("/", async (req, res, next) => {
+app.get("/", verifyAccessToken, async (req, res, next) => {
   await res.send("hello");
 });
 
