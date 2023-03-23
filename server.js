@@ -8,6 +8,8 @@ const authRouter = require("./Routers/Auth/auth");
 require("dotenv").config();
 // connect mongodb
 require("./Helpers/init_mongodb");
+// connect redis
+require("./Helpers/init_redis");
 
 // set up app
 const app = express();
@@ -38,7 +40,7 @@ app.use((err, req, res, next) => {
   res.send({
     error: {
       status: err.status || 500,
-      message: err.message
-    }
+      message: err.message,
+    },
   });
 });
