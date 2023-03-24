@@ -4,6 +4,7 @@ const createError = require("http-errors");
 const morgan = require("morgan");
 const { verifyAccessToken } = require("./Helpers/jwt");
 const authRouter = require("./Routers/Auth/auth");
+const userRouter = require("./Routers/User/user");
 // connect dotenv
 require("dotenv").config();
 // connect mongodb
@@ -39,6 +40,8 @@ app.get("/", verifyAccessToken, async (req, res, next) => {
 
 // auth request
 app.use("/auth", authRouter);
+// user request
+app.use("/user", userRouter);
 
 // set up error callback
 app.use((req, res, next) => {
