@@ -53,9 +53,6 @@ module.exports = {
           console.log(err.message);
           reject(createHttpError.InternalServerError());
         }
-        await client.set(userId, token, (err, reply) => {
-          if (err) throw createHttpError.InternalServerError(err.message);
-        });
         resolve(token);
       });
     });
