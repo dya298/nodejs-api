@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const CallBackReq = require("http-errors");
-const { signAccessToken, signRefreshToken } = require("../../Helpers/jwt");
+const {
+  signAccessToken,
+  signRefreshToken,
+  veriftyRefreshToken
+} = require("../../Helpers/jwt");
 const { authSchema } = require("../../Helpers/validation_schema");
 const User = require("../../Models/Users/userModel");
 
@@ -30,7 +34,23 @@ router.post("/register", async (req, res, next) => {
 });
 
 router.post("/refresh-token", async (req, res, next) => {
-  res.send("refresh-token route");
+  try {
+    // eslint-disable-next-line camelcase
+    const { refresh_token } = req.body;
+    // eslint-disable-next-line camelcase
+    if (!refresh_token) throw CallBackReq.BadRequest();
+    const userId = await veriftyRefreshToken(refresh_token);
+
+    // eslint-disable-next-line camelcase
+    const access_token = await signAccessToken(userId);
+    // eslint-disable-next-line camelcase
+    const refresh_tokenn = await signRefreshToken(userId);
+
+    // eslint-disable-next-line camelcase
+    res.send({ access_token, refresh_tokenn });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.post("/login", async (req, res, next) => {

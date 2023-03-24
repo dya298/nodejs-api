@@ -7,7 +7,7 @@ module.exports = {
       const payload = {};
       const secretKey = process.env.ACCESS_TOKEN;
       const options = {
-        expiresIn: "10s",
+        expiresIn: "15s",
         issuer: "tranduy030700@gmali.com",
         audience: userId
       };
@@ -53,6 +53,16 @@ module.exports = {
           reject(createHttpError.InternalServerError());
         }
         resolve(token);
+      });
+    });
+  },
+  veriftyRefreshToken: (refreshToken) => {
+    return new Promise((resolve, reject) => {
+      JWT.verify(refreshToken, process.env.REFRESH_TOKEN, (err, payload) => {
+        if (err) reject(createHttpError.Unauthorized());
+
+        const useriD = payload.aud;
+        resolve(useriD);
       });
     });
   }
