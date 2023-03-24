@@ -1,5 +1,6 @@
 const createHttpError = require("http-errors");
 const JWT = require("jsonwebtoken");
+const client = require("./init_redis");
 
 module.exports = {
   signAccessToken: (userId) => {
@@ -44,14 +45,17 @@ module.exports = {
       const secretKey = process.env.REFRESH_TOKEN;
       const options = {
         expiresIn: "10d",
-        issuer: "tranduy030700@gmali.com",
+        issuer: "tranduy030700@gmail.com",
         audience: userId
       };
-      JWT.sign(payload, secretKey, options, (err, token) => {
+      JWT.sign(payload, secretKey, options, async (err, token) => {
         if (err) {
           console.log(err.message);
           reject(createHttpError.InternalServerError());
         }
+        await client.set(userId, token, (err, reply) => {
+          if (err) throw createHttpError.InternalServerError(err.message);
+        });
         resolve(token);
       });
     });

@@ -9,18 +9,6 @@ const userRouter = require("./Routers/User/user");
 require("dotenv").config();
 // connect mongodb
 require("./Helpers/init_mongodb");
-// connect redis
-const client = require("./Helpers/init_redis");
-
-(async () => {
-  await client.connect();
-
-  await client.SET("foo", "bar");
-
-  const value = await client.get("foo");
-
-  console.log(value);
-})();
 
 // set up app
 const app = express();

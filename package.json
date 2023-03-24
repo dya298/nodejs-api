@@ -20,6 +20,7 @@
     "morgan": "^1.10.0",
     "nodemon": "^2.0.21",
     "redis": "^4.6.5",
+    "redis-commander": "^0.8.0",
     "redis-server": "^1.2.2"
   },
   "devDependencies": {
