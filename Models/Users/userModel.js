@@ -6,12 +6,32 @@ const UserSchema = new Schema({
   email: {
     type: String,
     required: true,
-    lowercase: true,
-    unique: true
+    lowercase: true
   },
   password: {
     type: String,
+    required: true,
+    length: 6
+  },
+  name: {
+    type: String,
     required: true
+  },
+  address: {
+    type: String,
+    length: 50
+  },
+  phone: {
+    type: String,
+    length: 50
+  },
+  isVerify: {
+    type: Boolean,
+    default: false
+  },
+  emailToken: {
+    type: String,
+    default: ""
   }
 });
 
@@ -35,6 +55,18 @@ UserSchema.methods.isValidPassword = async function (password) {
   } catch (error) {
     throw error;
   }
+};
+
+// create email option
+UserSchema.methods.options = function (req, user) {
+  const options = {
+    from: "\"Verify your email - note taking app\"",
+    to: user.email,
+    subject: "notetakingapp - verify your email",
+    html: `<h2> ${user.name}! Thanks for signing </h2>
+          <h4> Please verify your email <a href="http://localhost:3000/auth/verify-mail?emailtoken=${user.emailToken}">here</a></h4>`
+  };
+  return options;
 };
 
 const User = mongoose.model("user", UserSchema);

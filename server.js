@@ -10,6 +10,8 @@ require("dotenv").config();
 // connect mongodb
 require("./Helpers/init_mongodb");
 
+// require("./Helpers/init_redis");
+
 // set up app
 const app = express();
 const PORT = process.env.PORT || 3001;

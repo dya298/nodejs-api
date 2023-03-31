@@ -1,6 +1,5 @@
 const createHttpError = require("http-errors");
 const JWT = require("jsonwebtoken");
-const client = require("./init_redis");
 
 module.exports = {
   signAccessToken: (userId) => {
@@ -9,8 +8,25 @@ module.exports = {
       const secretKey = process.env.ACCESS_TOKEN;
       const options = {
         expiresIn: "15s",
-        issuer: "tranduy030700@gmali.com",
+        issuer: "tranduy030700@gmail.com",
         audience: userId
+      };
+      JWT.sign(payload, secretKey, options, (err, token) => {
+        if (err) {
+          console.log(err.message);
+          reject(createHttpError.InternalServerError());
+        }
+        resolve(token);
+      });
+    });
+  },
+  signEmailToken: (mail) => {
+    return new Promise((resolve, reject) => {
+      const payload = {};
+      const secretKey = process.env.ACCESS_TOKEN;
+      const options = {
+        issuer: "tranduy030700@gmail.com",
+        audience: mail
       };
       JWT.sign(payload, secretKey, options, (err, token) => {
         if (err) {
