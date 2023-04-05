@@ -15,15 +15,11 @@ const UserSchema = new Schema({
   },
   name: {
     type: String,
-    required: true
-  },
-  address: {
-    type: String,
-    length: 50
+    require: true
   },
   phone: {
     type: String,
-    length: 50
+    require: true
   },
   isVerify: {
     type: Boolean,
@@ -63,7 +59,7 @@ UserSchema.methods.options = function (req, user) {
     from: "\"Verify your email - note taking app\"",
     to: user.email,
     subject: "notetakingapp - verify your email",
-    html: `<h2> ${user.name}! Thanks for signing </h2>
+    html: `<h2> ${user.email}! Thanks for signing </h2>
           <h4> Please verify your email <a href="http://localhost:3000/auth/verify-mail?emailtoken=${user.emailToken}">here</a></h4>`
   };
   return options;

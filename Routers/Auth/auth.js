@@ -8,7 +8,7 @@ const {
   veriftyRefreshToken,
   signEmailToken
 } = require("../../Helpers/jwt");
-const { authSchema } = require("../../Helpers/validation_schema");
+const { authSchema, loginSchema } = require("../../Helpers/validation_schema");
 const User = require("../../Models/Users/userModel");
 
 router.post("/register", async (req, res, next) => {
@@ -21,7 +21,7 @@ router.post("/register", async (req, res, next) => {
       );
     }
     const user = new User(resultSchema);
-    // const emailToken = await signEmailToken(resultSchema.email);
+    const emailToken = await signEmailToken(resultSchema.email);
     // const set up email options
     const transporter = nodeMailer.createTransport({
       service: "gmail",
@@ -29,30 +29,42 @@ router.post("/register", async (req, res, next) => {
       port: 465,
       secure: true,
       auth: {
-        user: "tranduy030700@gmail.com",
-        pass: "fhezngdxaotdokkz"
+        user: process.env.ACCOUNT_MAIL,
+        pass: process.env.PASSWORD_MAIL
       },
       tls: {
         rejectUnauthorized: false
       }
     });
 
+    // set email token for user
+    user.emailToken = emailToken;
+    // get option display to html
     const option = user.options(req, user);
 
-    transporter.sendMail(option, (error, info) => {
+    // send mail
+    transporter.sendMail(option, async (error, info) => {
       if (error) next(error);
-      res.send(`Verification email is send to your email account + ${info.response}`);
+      // save into database
+      await user.save();
+      res.send("Verification email is send to your email account");
     });
-    // const saveUser = await user.save();
-    // const accessToken = await signAccessToken(saveUser.id);
-    // const refreshToken = await signRefreshToken(user.id);
-    // res.send({
-    //   saveUser,
-    //   access_token: accessToken,
-    //   refresh_token: refreshToken
-    // });
   } catch (error) {
     if (error.isJoi === true) error.status = 422;
+    next(error);
+  }
+});
+
+router.get("/verify-mail", async (req, res, next) => {
+  try {
+    const emailtoken = req.query.emailtoken;
+    const user = await User.findOne({ emailToken: emailtoken });
+    if (user) {
+      user.isVerify = true;
+      await user.save();
+      res.send("Verify is successfully");
+    }
+  } catch (error) {
     next(error);
   }
 });
@@ -79,12 +91,15 @@ router.post("/refresh-token", async (req, res, next) => {
 
 router.post("/login", async (req, res, next) => {
   try {
-    const resultSchema = await authSchema.validateAsync(req.body);
+    const resultSchema = await loginSchema.validateAsync(req.body);
     const user = await User.findOne({ email: resultSchema.email });
     if (!user) {
       throw CallBackReq.BadRequest("User's not register");
     }
-    const isMatch = await user.isValidPassword(resultSchema.password);
+    if (!user.isVerify) {
+      throw CallBackReq.Unauthorized("Your email is not verify");
+    }
+    const isMatch = user.isValidPassword(resultSchema.password);
     if (!isMatch) {
       throw CallBackReq.Unauthorized("Email or password is not valid");
     }
@@ -106,10 +121,6 @@ router.post("/login", async (req, res, next) => {
 
 router.post("/logout", async (req, res, next) => {
   res.send("logout route");
-});
-
-router.get("/verify-mail", async (req, res, next) => {
-  res.send("verify-mail route");
 });
 
 module.exports = router;

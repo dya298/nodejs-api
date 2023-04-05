@@ -2,9 +2,11 @@ const express = require("express");
 // const morgan = require("morgan");
 const createError = require("http-errors");
 const morgan = require("morgan");
-const { verifyAccessToken } = require("./Helpers/jwt");
 const authRouter = require("./Routers/Auth/auth");
 const userRouter = require("./Routers/User/user");
+const schema = require("./schema");
+const { graphqlHTTP } = require("express-graphql");
+
 // connect dotenv
 require("dotenv").config();
 // connect mongodb
@@ -24,14 +26,15 @@ app.listen(PORT, () => {
   console.log(`Server is running in port ${PORT}`);
 });
 
-app.get("/", verifyAccessToken, async (req, res, next) => {
-  await res.send("hello");
-});
-
 // auth request
 app.use("/auth", authRouter);
 // user request
 app.use("/user", userRouter);
+
+app.use("/graphql", graphqlHTTP({
+  schema,
+  graphiql: true
+}));
 
 // set up error callback
 app.use((req, res, next) => {

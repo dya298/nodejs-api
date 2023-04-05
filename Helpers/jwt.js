@@ -7,7 +7,7 @@ module.exports = {
       const payload = {};
       const secretKey = process.env.ACCESS_TOKEN;
       const options = {
-        expiresIn: "15s",
+        expiresIn: "1h",
         issuer: "tranduy030700@gmail.com",
         audience: userId
       };
