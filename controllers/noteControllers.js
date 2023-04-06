@@ -1,5 +1,3 @@
-const boom = require("boom");
-
 // Get Data Models
 const Note = require("../../nodejs-api/Models/Notes/notesModel");
 // Get all notes
@@ -8,7 +6,7 @@ exports.getNotes = async () => {
     const notes = await Note.find();
     return notes;
   } catch (err) {
-    throw boom.boomify(err);
+    console.log(err);
   }
 };
 
@@ -19,7 +17,7 @@ exports.getSingleNote = async req => {
     const note = await Note.findById(id);
     return note;
   } catch (err) {
-    throw boom.boomify(err);
+    console.log(err);
   }
 };
 
@@ -30,7 +28,7 @@ exports.addNote = async req => {
     const newNote = await note.save();
     return newNote;
   } catch (err) {
-    throw boom.boomify(err);
+    console.log(err);
   }
 };
 
@@ -42,7 +40,7 @@ exports.updateNote = async req => {
     const update = await Note.findByIdAndUpdate(id, updateData, { new: true });
     return update;
   } catch (err) {
-    throw boom.boomify(err);
+    console.log(err);
   }
 };
 
@@ -53,6 +51,6 @@ exports.deleteNote = async req => {
     const note = await Note.findByIdAndRemove(id);
     return note;
   } catch (err) {
-    throw boom.boomify(err);
+    console.log(err);
   }
 };

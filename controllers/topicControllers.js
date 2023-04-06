@@ -1,5 +1,3 @@
-const boom = require("boom");
-
 const Topic = require("../../nodejs-api/Models/Topics/topicModel");
 
 const Note = require("../../nodejs-api/Models/Notes/notesModel");
@@ -10,7 +8,7 @@ exports.getTopic = async () => {
 
     return topics;
   } catch (err) {
-    throw boom.boomify(err);
+    console.log(err);
   }
 };
 
@@ -22,7 +20,7 @@ exports.getSingleTopic = async (req) => {
 
     return topic;
   } catch (err) {
-    throw boom.boomify(err);
+    console.log(err);
   }
 };
 
@@ -34,7 +32,7 @@ exports.getTopicNote = async (req) => {
 
     return topics;
   } catch (err) {
-    throw boom.boomify(err);
+    console.log(err);
   }
 };
 
@@ -46,7 +44,7 @@ exports.addTopic = async (req) => {
 
     return newTopic;
   } catch (err) {
-    throw boom.boomify(err);
+    console.log(err);
   }
 };
 
@@ -60,7 +58,7 @@ exports.updateTopic = async (req) => {
 
     return update;
   } catch (err) {
-    throw boom.boomify(err);
+    console.log(err);
   }
 };
 
@@ -72,6 +70,6 @@ exports.deleteTopic = async (req) => {
 
     return topic;
   } catch (err) {
-    throw boom.boomify(err);
+    console.log(err);
   }
 };

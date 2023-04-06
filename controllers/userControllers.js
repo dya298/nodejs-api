@@ -1,5 +1,3 @@
-const boom = require("boom");
-
 const Note = require("../../nodejs-api/Models/Notes/notesModel");
 
 exports.getUserNote = async (req) => {
@@ -10,6 +8,6 @@ exports.getUserNote = async (req) => {
 
     return users;
   } catch (err) {
-    throw boom.boomify(err);
+    console.log(err);
   }
 };
