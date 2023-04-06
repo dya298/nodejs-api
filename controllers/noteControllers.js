@@ -2,7 +2,6 @@ const boom = require("boom");
 
 // Get Data Models
 const Note = require("../../nodejs-api/Models/Notes/notesModel");
-
 // Get all notes
 exports.getNotes = async () => {
   try {

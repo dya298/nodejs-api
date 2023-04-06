@@ -4,8 +4,10 @@ const createError = require("http-errors");
 const morgan = require("morgan");
 const authRouter = require("./Routers/Auth/auth");
 const userRouter = require("./Routers/User/user");
+const noteRouter = require("./Routers/Notes/notes");
 const schema = require("./schema");
 const { graphqlHTTP } = require("express-graphql");
+const { verifyAccessToken } = require("./Helpers/jwt");
 
 // connect dotenv
 require("dotenv").config();
@@ -31,7 +33,9 @@ app.use("/auth", authRouter);
 // user request
 app.use("/user", userRouter);
 
-app.use("/graphql", graphqlHTTP({
+app.use("/note", noteRouter);
+
+app.use("/graphql", verifyAccessToken, graphqlHTTP({
   schema,
   graphiql: true
 }));
