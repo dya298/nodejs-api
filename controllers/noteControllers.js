@@ -1,5 +1,5 @@
 // Get Data Models
-const Note = require("../../nodejs-api/Models/Notes/notesModel");
+const Note = require("../Models/Notes/notesModel");
 // Get all notes
 exports.getNotes = async () => {
   try {
