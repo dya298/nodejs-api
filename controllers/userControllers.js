@@ -1,4 +1,4 @@
-const Note = require("../../nodejs-api/Models/Notes/notesModel");
+const Note = require("../Models/Notes/notesModel");
 
 exports.getUserNote = async (req) => {
   try {

@@ -1,6 +1,6 @@
-const Topic = require("../../nodejs-api/Models/Topics/topicModel");
+const Topic = require("../Models/Topics/topicModel");
 
-const Note = require("../../nodejs-api/Models/Notes/notesModel");
+const Note = require("../Models/Notes/notesModel");
 
 exports.getTopic = async () => {
   try {
