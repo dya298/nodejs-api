@@ -43,7 +43,7 @@ router.post("/register", async (req, res, next) => {
     const option = user.options(req, user);
 
     // send mail
-    transporter.sendMail(option, async (error, info) => {
+    await transporter.sendMail(option, async (error, info) => {
       if (error) next(error);
       // save into database
       await user.save();

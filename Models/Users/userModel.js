@@ -60,7 +60,7 @@ UserSchema.methods.options = function (req, user) {
     to: user.email,
     subject: "notetakingapp - verify your email",
     html: `<h2> ${user.email}! Thanks for signing </h2>
-          <h4> Please verify your email <a href="https://eager-fawn-overcoat.cyclic.app/auth/verify-mail?emailtoken=${user.emailToken}">here</a></h4>`
+          <h4> Please verify your email <a href="http://localhost:3000/auth/verify-mail?emailtoken=${user.emailToken}">here</a></h4>`
   };
   return options;
 };
