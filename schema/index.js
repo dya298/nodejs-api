@@ -15,8 +15,16 @@ const {
 
   GraphQLBoolean,
 
+  GraphQLInt,
+
   GraphQLNonNull
 } = graphql;
+
+const {
+  Page,
+  convertNodeToCursor,
+  convertCursorToNodeId
+} = require("../pagination");
 
 // Define Object Types
 
@@ -117,10 +125,51 @@ const RootQuery = new GraphQLObjectType({
     },
 
     notes: {
-      type: new GraphQLList(noteType),
+      type: Page(noteType),
 
+      args: {
+        first: { type: GraphQLInt },
+        afterCursor: { type: GraphQLString }
+      },
       async resolve (parent, args) {
-        return await controllers.notes.getNotes();
+        const { first, afterCursor } = args;
+        let afterIndex = 0;
+
+        return await controllers.notes.getNotes()
+          .then(res => {
+            const data = res;
+            if (typeof afterCursor === "string") {
+              /* Extracting nodeId from afterCursor */
+              const nodeId = convertCursorToNodeId(afterCursor);
+              /* Finding the index of nodeId */
+              const nodeIndex = data.findIndex(datum => datum.id === nodeId);
+              if (nodeIndex >= 0) {
+                afterIndex = nodeIndex + 1;
+              }
+            }
+            const slicedData = data.slice(afterIndex, afterIndex + first);
+            const edges = slicedData.map(node => ({
+              node,
+              cursor: convertNodeToCursor(node)
+            }));
+
+            let startCursor; let endCursor = null;
+            if (edges.length > 0) {
+              startCursor = convertNodeToCursor(edges[0].node);
+              endCursor = convertNodeToCursor(edges[edges.length - 1].node);
+            }
+            const hasNextPage = data.length > afterIndex + first;
+
+            return {
+              totalCount: data.length,
+              edges,
+              pageInfo: {
+                startCursor,
+                endCursor,
+                hasNextPage
+              }
+            };
+          });
       }
     },
 
@@ -142,46 +191,6 @@ const Mutations = new GraphQLObjectType({
   name: "Mutations",
 
   fields: {
-    addNote: {
-      type: noteType,
-
-      args: {
-        title: { type: new GraphQLNonNull(GraphQLString) },
-
-        desc: { type: new GraphQLNonNull(GraphQLString) },
-
-        topic_id: { type: GraphQLID },
-
-        user_id: { type: GraphQLID }
-      },
-
-      async resolve (parent, args) {
-        const data = await controllers.notes.addNote(args);
-
-        return data;
-      }
-    },
-
-    editNote: {
-      type: noteType,
-
-      args: {
-        id: { type: new GraphQLNonNull(GraphQLID) },
-
-        title: { type: new GraphQLNonNull(GraphQLString) },
-
-        desc: { type: new GraphQLNonNull(GraphQLString) },
-
-        note_id: { type: GraphQLID }
-      },
-
-      async resolve (parent, args) {
-        const data = await controllers.notes.updateNote(args);
-
-        return data;
-      }
-    },
-
     deleteNote: {
       type: noteType,
 
@@ -191,7 +200,6 @@ const Mutations = new GraphQLObjectType({
 
       async resolve (parent, args) {
         const data = await controllers.notes.deleteNote(args);
-
         return data;
       }
     },

@@ -28,7 +28,9 @@
     "nodemon": "^2.0.21",
     "redis": "^4.6.5",
     "redis-commander": "^0.8.0",
-    "redis-server": "^1.2.2"
+    "redis-server": "^1.2.2",
+    "swagger-jsdoc": "^6.0.0",
+    "swagger-ui-express": "^4.6.2"
   },
   "devDependencies": {
     "eslint": "^8.36.0",

@@ -19,13 +19,18 @@ const UserSchema = new Schema({
   },
   phone: {
     type: String,
-    require: true
+    require: true,
+    default: ""
   },
   isVerify: {
     type: Boolean,
     default: false
   },
   emailToken: {
+    type: String,
+    default: ""
+  },
+  image: {
     type: String,
     default: ""
   }
@@ -60,7 +65,7 @@ UserSchema.methods.options = function (req, user) {
     to: user.email,
     subject: "notetakingapp - verify your email",
     html: `<h2> ${user.email}! Thanks for signing </h2>
-          <h4> Please verify your email <a href="http://localhost:3000/auth/verify-mail?emailtoken=${user.emailToken}">here</a></h4>`
+          <h4> Please verify your email <a href="${process.env.HOST_NAME}/auth/verify-mail?emailtoken=${user.emailToken}">here</a></h4>`
   };
   return options;
 };

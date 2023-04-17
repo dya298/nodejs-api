@@ -1,23 +1,34 @@
 const router = require("express").Router();
-const cloudinary = require("../../utils/cloudinary");
 const upload = require("../../utils/multer");
-const Note = require("../../Models/Notes/notesModel");
+const { verifyAccessToken } = require("../../Helpers/jwt");
+const { addNoteSchema } = require("../../Helpers/validation_schema");
+const noteControllers = require("../../controllers/noteControllers");
 
-router.post("/uploadimage", upload.single("image"), async (req, res) => {
+router.post("/addNote", verifyAccessToken, upload.single("image"), async (req, res, next) => {
   try {
-    const result = await cloudinary.uploader.upload(req.file.path);
-    // eslint-disable-next-line camelcase
-    const _id = req.query._id;
-    // eslint-disable-next-line camelcase
-    const note = await Note.findOne({ _id });
-    note.profile_img = result.secure_url;
-    note.cloudinary_id = result.public_id;
-    await note.save();
-    res.status(200).send({
-      note
-    });
-  } catch (err) {
-    console.log(err);
+    const resultSchema = await addNoteSchema.validateAsync(req.body);
+    let file = null;
+    if (req.file != null) {
+      file = req.file.path;
+    }
+    const data = await noteControllers.addNote(resultSchema, file);
+    res.send(data);
+  } catch (error) {
+    if (error.isJoi === true) error.status = 422;
+    next(error);
   }
 });
+
+router.post("/editNote", verifyAccessToken, upload.single("image"), async (req, res, next) => {
+  try {
+    const resultSchema = await addNoteSchema.validateAsync(req.body);
+    const file = req.file.path;
+    const data = await noteControllers.addNote(resultSchema, file);
+    res.send(data);
+  } catch (error) {
+    if (error.isJoi === true) error.status = 422;
+    next(error);
+  }
+});
+
 module.exports = router;
