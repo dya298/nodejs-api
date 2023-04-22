@@ -47,6 +47,8 @@ require("./Helpers/init_mongodb");
 // set up app
 const app = express();
 const PORT = process.env.PORT || 3001;
+const cors = require("cors");
+app.use(cors({ origin: "*" }));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
