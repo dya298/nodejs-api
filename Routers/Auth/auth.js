@@ -10,6 +10,7 @@ const {
 } = require("../../Helpers/jwt");
 const { authSchema, loginSchema } = require("../../Helpers/validation_schema");
 const User = require("../../Models/Users/userModel");
+const client = require("../../Helpers/init_redis");
 
 router.post("/register", async (req, res, next) => {
   try {
@@ -81,7 +82,6 @@ router.post("/refresh-token", async (req, res, next) => {
     const access_token = await signAccessToken(userId);
     // eslint-disable-next-line camelcase
     const refresh_token = await signRefreshToken(userId);
-
     // eslint-disable-next-line camelcase
     res.send({ userId, access_token, refresh_token });
   } catch (error) {
@@ -106,6 +106,13 @@ router.post("/login", async (req, res, next) => {
 
     const accessToken = await signAccessToken(user.id);
     const refreshToken = await signRefreshToken(user.id);
+
+    // client.SET(user.id, refreshToken, 10 * 24 * 60 * 60, (err, reply) => {
+    //   if (err) {
+    //     console.log(err.message);
+    //     next(err);
+    //   }
+    // });
     res.send({
       user,
       access_token: accessToken,

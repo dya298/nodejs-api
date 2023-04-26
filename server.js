@@ -42,8 +42,6 @@ require("dotenv").config();
 // connect mongodb
 require("./Helpers/init_mongodb");
 
-// require("./Helpers/init_redis");
-
 // set up app
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -52,6 +50,7 @@ app.use(cors({ origin: "*" }));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+require("./Helpers/init_redis");
 
 const swaggerSpec = swaggerJSDoc(options);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));

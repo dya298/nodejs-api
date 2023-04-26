@@ -14,7 +14,7 @@ module.exports = {
       JWT.sign(payload, secretKey, options, (err, token) => {
         if (err) {
           console.log(err.message);
-          reject(createHttpError.InternalServerError());
+          return reject(createHttpError.InternalServerError());
         }
         resolve(token);
       });
@@ -31,7 +31,7 @@ module.exports = {
       JWT.sign(payload, secretKey, options, (err, token) => {
         if (err) {
           console.log(err.message);
-          reject(createHttpError.InternalServerError());
+          return reject(createHttpError.InternalServerError());
         }
         resolve(token);
       });
@@ -44,7 +44,6 @@ module.exports = {
     const authHeader = req.headers.authorization;
     const bearerToken = authHeader.split(" ");
     const token = bearerToken[1];
-    console.log(bearerToken);
     JWT.verify(token, process.env.ACCESS_TOKEN, (err, payload) => {
       if (err) {
         const message =
@@ -64,10 +63,10 @@ module.exports = {
         issuer: "tranduy030700@gmail.com",
         audience: userId
       };
-      JWT.sign(payload, secretKey, options, async (err, token) => {
+      JWT.sign(payload, secretKey, options, (err, token) => {
         if (err) {
           console.log(err.message);
-          reject(createHttpError.InternalServerError());
+          return reject(createHttpError.InternalServerError());
         }
         resolve(token);
       });
@@ -76,7 +75,7 @@ module.exports = {
   veriftyRefreshToken: (refreshToken) => {
     return new Promise((resolve, reject) => {
       JWT.verify(refreshToken, process.env.REFRESH_TOKEN, (err, payload) => {
-        if (err) reject(createHttpError.Unauthorized());
+        if (err) return reject(createHttpError.Unauthorized());
 
         const useriD = payload.aud;
         resolve(useriD);
