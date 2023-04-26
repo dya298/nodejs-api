@@ -77,7 +77,6 @@ router.post("/refresh-token", async (req, res, next) => {
     // eslint-disable-next-line camelcase
     if (!res_refresh_token) throw CallBackReq.BadRequest();
     const userId = await veriftyRefreshToken(res_refresh_token);
-
     // eslint-disable-next-line camelcase
     const access_token = await signAccessToken(userId);
     // eslint-disable-next-line camelcase
@@ -106,13 +105,6 @@ router.post("/login", async (req, res, next) => {
 
     const accessToken = await signAccessToken(user.id);
     const refreshToken = await signRefreshToken(user.id);
-
-    // client.SET(user.id, refreshToken, 10 * 24 * 60 * 60, (err, reply) => {
-    //   if (err) {
-    //     console.log(err.message);
-    //     next(err);
-    //   }
-    // });
     res.send({
       user,
       access_token: accessToken,
@@ -127,7 +119,20 @@ router.post("/login", async (req, res, next) => {
 });
 
 router.post("/logout", async (req, res, next) => {
-  res.send("logout route");
+  try {
+    const { res_refresh_token } = req.body;
+    if (!res_refresh_token) throw CallBackReq.BadRequest();
+    const userID = await veriftyRefreshToken(res_refresh_token);
+    client.DEL(userID, (err, val) => {
+      if (err) {
+        console.log(err.message);
+        throw CallBackReq.InternalServerError();
+      }
+      res.sendStatus(204);
+    })
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;

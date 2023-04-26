@@ -1,5 +1,6 @@
 const createHttpError = require("http-errors");
 const JWT = require("jsonwebtoken");
+const client = require("../Helpers/init_redis");
 
 module.exports = {
   signAccessToken: (userId) => {
@@ -14,7 +15,7 @@ module.exports = {
       JWT.sign(payload, secretKey, options, (err, token) => {
         if (err) {
           console.log(err.message);
-          return reject(createHttpError.InternalServerError());
+          reject(createHttpError.InternalServerError());
         }
         resolve(token);
       });
@@ -31,7 +32,7 @@ module.exports = {
       JWT.sign(payload, secretKey, options, (err, token) => {
         if (err) {
           console.log(err.message);
-          return reject(createHttpError.InternalServerError());
+          reject(createHttpError.InternalServerError());
         }
         resolve(token);
       });
@@ -39,7 +40,7 @@ module.exports = {
   },
   verifyAccessToken: (req, res, next) => {
     if (!req.headers.authorization) {
-      return next(createHttpError.Unauthorized());
+      next(createHttpError.Unauthorized());
     }
     const authHeader = req.headers.authorization;
     const bearerToken = authHeader.split(" ");
@@ -48,7 +49,7 @@ module.exports = {
       if (err) {
         const message =
           err.name === "JsonWebTokenError" ? "Unauthorized" : err.message;
-        return next(createHttpError.Unauthorized(message));
+        next(createHttpError.Unauthorized(message));
       }
       req.payload = payload;
       next();
@@ -63,22 +64,34 @@ module.exports = {
         issuer: "tranduy030700@gmail.com",
         audience: userId
       };
-      JWT.sign(payload, secretKey, options, (err, token) => {
+      JWT.sign(payload, secretKey, options, async (err, token) => {
         if (err) {
           console.log(err.message);
           return reject(createHttpError.InternalServerError());
         }
+        await client.set(userId, token, 10 * 24 * 60 * 60, (err, reply) => {
+          if (err) {
+            console.log(err.message);
+            next(err);
+          }
+        });
         resolve(token);
       });
     });
   },
   veriftyRefreshToken: (refreshToken) => {
     return new Promise((resolve, reject) => {
-      JWT.verify(refreshToken, process.env.REFRESH_TOKEN, (err, payload) => {
-        if (err) return reject(createHttpError.Unauthorized());
+      JWT.verify(refreshToken, process.env.REFRESH_TOKEN, async (err, payload) => {
+        if (err) reject(createHttpError.Unauthorized());
 
         const useriD = payload.aud;
-        resolve(useriD);
+        const value = await client.get(useriD);
+        if(value){
+          if (refreshToken === value) resolve(useriD);
+        }
+        else{
+          reject(createHttpError.Unauthorized()); 
+        }
       });
     });
   }

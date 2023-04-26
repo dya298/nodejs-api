@@ -32,7 +32,7 @@ const UserSchema = new Schema({
   },
   image: {
     type: String,
-    default: ""
+    default: "https://res.cloudinary.com/dg5seh9by/image/upload/v1682518364/user_csrt3u.png"
   }
 });
 
@@ -64,7 +64,7 @@ UserSchema.methods.options = function (req, user) {
     from: "\"Verify your email - note taking app\"",
     to: user.email,
     subject: "notetakingapp - verify your email",
-    html: `<h2> ${user.email}! Thanks for signing </h2>
+    html: `<h2> ${user.name}! Thanks for signing </h2>
           <h4> Please verify your email <a href="${process.env.HOST_NAME}/auth/verify-mail?emailtoken=${user.emailToken}">here</a></h4>`
   };
   return options;
