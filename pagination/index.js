@@ -49,6 +49,11 @@ const convertCursorToNodeId = (cursor) => {
   return new Buffer(cursor, "base64").toString("binary");
 };
 
+const converetTime = (time) => {
+  const timeNow = Date.now();
+  const seconds = timeNow.gettime
+}
+
 module.exports = {
   Page,
   convertNodeToCursor,

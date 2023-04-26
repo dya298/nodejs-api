@@ -36,11 +36,17 @@ const noteType = new GraphQLObjectType({
 
     title: { type: GraphQLString },
 
+    time: { type: GraphQLString},
+
     desc: { type: GraphQLString },
 
     topic_id: { type: GraphQLID },
 
     user_id: { type: GraphQLID },
+
+    cloudinary_id: { type: GraphQLString },
+
+    profile_img: { type: GraphQLString },
 
     topic: {
       type: topicType,

@@ -7,6 +7,11 @@ const noteSchema = new mongoose.Schema({
 
   desc: String,
 
+  time: {
+    type: Date,
+    default: Date.now()
+  },
+
   topic_id: ObjectId,
 
   user_id: ObjectId,
