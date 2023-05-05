@@ -187,6 +187,14 @@ const RootQuery = new GraphQLObjectType({
       async resolve (parent, args) {
         return await controllers.topics.getSingleTopic(args);
       }
+    },
+
+    topics: {
+      type: GraphQLList(topicType),
+
+      async resolve (parent, args) {
+        return await controllers.topics.getTopics();
+      }
     }
   }
 });

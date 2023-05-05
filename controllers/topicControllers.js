@@ -2,10 +2,9 @@ const Topic = require("../Models/Topics/topicModel");
 
 const Note = require("../Models/Notes/notesModel");
 
-exports.getTopic = async () => {
+exports.getTopics = async () => {
   try {
     const topics = await Topic.find();
-
     return topics;
   } catch (err) {
     console.log(err);

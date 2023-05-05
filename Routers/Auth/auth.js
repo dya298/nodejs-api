@@ -6,7 +6,7 @@ const {
   signAccessToken,
   signRefreshToken,
   veriftyRefreshToken,
-  signEmailToken
+  signEmailToken,
 } = require("../../Helpers/jwt");
 const { authSchema, loginSchema } = require("../../Helpers/validation_schema");
 const User = require("../../Models/Users/userModel");
@@ -17,7 +17,7 @@ router.post("/register", async (req, res, next) => {
     const resultSchema = await authSchema.validateAsync(req.body);
     const doesExist = await User.findOne({ email: resultSchema.email });
     if (doesExist) {
-      throw new CallBackReq.Conflict(
+      return new CallBackReq.Conflict(
         `${resultSchema.email} is already been registered`
       );
     }
@@ -31,11 +31,11 @@ router.post("/register", async (req, res, next) => {
       secure: true,
       auth: {
         user: process.env.ACCOUNT_MAIL,
-        pass: process.env.PASSWORD_MAIL
+        pass: process.env.PASSWORD_MAIL,
       },
       tls: {
-        rejectUnauthorized: false
-      }
+        rejectUnauthorized: false,
+      },
     });
 
     // set email token for user
@@ -75,7 +75,7 @@ router.post("/refresh-token", async (req, res, next) => {
     // eslint-disable-next-line camelcase
     const { res_refresh_token } = req.body;
     // eslint-disable-next-line camelcase
-    if (!res_refresh_token) throw CallBackReq.BadRequest();
+    if (!res_refresh_token) return CallBackReq.BadRequest();
     const userId = await veriftyRefreshToken(res_refresh_token);
     // eslint-disable-next-line camelcase
     const access_token = await signAccessToken(userId);
@@ -93,14 +93,14 @@ router.post("/login", async (req, res, next) => {
     const resultSchema = await loginSchema.validateAsync(req.body);
     const user = await User.findOne({ email: resultSchema.email });
     if (!user) {
-      throw CallBackReq.BadRequest("User's not register");
+      return res.status(400).json({ message: "User's not register" });
     }
     if (!user.isVerify) {
-      throw CallBackReq.Unauthorized("Your email is not verify");
+      return res.status(400).json({ message: "Your email is not verify" });
     }
     const isMatch = user.isValidPassword(resultSchema.password);
     if (!isMatch) {
-      throw CallBackReq.Unauthorized("Email or password is not valid");
+      return res.status(400).json({ message: "Email or password is not valid" });
     }
 
     const accessToken = await signAccessToken(user.id);
@@ -108,11 +108,11 @@ router.post("/login", async (req, res, next) => {
     res.send({
       user,
       access_token: accessToken,
-      refresh_token: refreshToken
+      refresh_token: refreshToken,
     });
   } catch (error) {
     if (error.isJoi === true) {
-      throw CallBackReq.BadRequest("Invalid email or password");
+      return res.status(400).json({ message: "Invalid email or password" });
     }
     next(error);
   }
@@ -121,15 +121,14 @@ router.post("/login", async (req, res, next) => {
 router.post("/logout", async (req, res, next) => {
   try {
     const { res_refresh_token } = req.body;
-    if (!res_refresh_token) throw CallBackReq.BadRequest();
+    if (!res_refresh_token) return CallBackReq.BadRequest();
     const userID = await veriftyRefreshToken(res_refresh_token);
     client.DEL(userID, (err, val) => {
       if (err) {
-        console.log(err.message);
-        throw CallBackReq.InternalServerError();
+        return res.status(500);
       }
       res.sendStatus(204);
-    })
+    });
   } catch (error) {
     next(error);
   }
