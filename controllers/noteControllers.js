@@ -5,9 +5,24 @@ const cloudinary = require("../utils/cloudinary");
 exports.getNotes = async () => {
   try {
     const notes = await Note.find();
+    const timeNow = new Date();
+    const timeYear = timeNow.getFullYear();
+    console.log(timeYear);
+    for (let i = 0; i < notes.length; i++) {
+      if(!notes[i].time) break;
+      const yearNote = notes[i].time.getFullYear();
+      if(timeYear - yearNote > 0)
+      {
+
+      }
+      else
+      {
+
+      }
+    }
     return notes;
   } catch (err) {
-    console.log(err);
+    console.log(err); 
   }
 };
 
