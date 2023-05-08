@@ -24,6 +24,7 @@ const {
   Page,
   convertNodeToCursor,
   convertCursorToNodeId,
+  ConvertTime
 } = require("../pagination");
 
 // Define Object Types
@@ -35,8 +36,6 @@ const noteType = new GraphQLObjectType({
     _id: { type: GraphQLID },
 
     title: { type: GraphQLString },
-
-    time: { type: GraphQLString },
 
     desc: { type: GraphQLString },
 
@@ -155,7 +154,8 @@ const RootQuery = new GraphQLObjectType({
           const slicedData = data.slice(afterIndex, afterIndex + first);
           const edges = slicedData.map((node) => ({
             node,
-            cursor: convertNodeToCursor(node),
+            time: ConvertTime(node),
+            cursors: convertNodeToCursor(node),
           }));
 
           let startCursor;
