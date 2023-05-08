@@ -151,7 +151,8 @@ const RootQuery = new GraphQLObjectType({
               afterIndex = nodeIndex + 1;
             }
           }
-          const slicedData = data.slice(afterIndex, afterIndex + first);
+
+          const slicedData = data.slice(afterIndex, afterIndex + !first ? data.length : first);
           const edges = slicedData.map((node) => ({
             node,
             time: ConvertTime(node),
@@ -164,7 +165,7 @@ const RootQuery = new GraphQLObjectType({
             startCursor = convertNodeToCursor(edges[0].node);
             endCursor = convertNodeToCursor(edges[edges.length - 1].node);
           }
-          const hasNextPage = data.length > afterIndex + first;
+          const hasNextPage = data.length > afterIndex + (!first ? data.length : first);
 
           return {
             totalCount: data.length,
