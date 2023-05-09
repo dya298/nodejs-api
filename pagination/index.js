@@ -81,11 +81,11 @@ const ConvertTime = (node) => {
         {
           if(timeHour - timeHourNote === 1)
           {
-
+            
           }
           else
           {
-            timeDisplay = ``
+            timeDisplay = `${timeHour - timeHourNote}h ago`
           }
         }
         else{
