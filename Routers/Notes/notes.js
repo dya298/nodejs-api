@@ -6,11 +6,9 @@ const noteControllers = require("../../controllers/noteControllers");
 
 router.post(
   "/addNote",
-  verifyAccessToken,
   upload.single("image"),
   async (req, res, next) => {
     try {
-      // const resultSchema = await addNoteSchema.validateAsync(req.body);
       const note = req.body;
       let file = null;
       if (req.file != null) {

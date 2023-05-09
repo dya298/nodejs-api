@@ -53,6 +53,8 @@ const convertCursorToNodeId = (cursor) => {
 const ConvertTime = (node) => {
   let timeDisplay = "";
   const TimeNode = new Date(node.time);
+  TimeNode.setHours(TimeNode.getHours() + 7);
+  console.log(TimeNode);
   if (!node.time) {
   } else {
     const timeNow = new Date();
@@ -67,7 +69,7 @@ const ConvertTime = (node) => {
     const yearNote = TimeNode.getFullYear();
     const monthNote = TimeNode.getMonth();
     const dayNote = TimeNode.getDay();
-    const timeHourNote = TimeNode.getHours();
+    const timeHourNote = TimeNode.getHours() - 7;
     const timeMinutesNote = TimeNode.getMinutes();
     const timeSecNote = TimeNode.getSeconds();
     const event = new Date(
@@ -75,24 +77,25 @@ const ConvertTime = (node) => {
       TimeNode.getMonth(),
       TimeNode.getDate()
     );
+    console.log(timeSec);
+    console.log(timeSecNote);
     if (timeYear - yearNote === 0) {
       if (timeMonth - monthNote === 0) {
-        if(timeDay - dayNote === 0)
-        {
-          if(timeHour - timeHourNote === 1)
-          {
-            
+        if (timeDay - dayNote === 0) {
+          if (timeHour - timeHourNote === 0) {
+            if (timeMinutes - timeMinutesNote === 0) {
+              timeDisplay = `Just now`;
+            } else {
+              timeDisplay = `${timeMinutes - timeMinutesNote}mins ago`;
+            }
+          } else {
+            timeDisplay = `${timeHour - timeHourNote}h ago`;
           }
-          else
-          {
-            timeDisplay = `${timeHour - timeHourNote}h ago`
-          }
-        }
-        else{
-          timeDisplay = event.toDateString().substring(4).slice(0, -4);
+        } else {
+          timeDisplay = event.toDateString().substring(4).slice(0, -5);
         }
       } else {
-        timeDisplay = event.toDateString().substring(4).slice(0, -4);
+        timeDisplay = event.toDateString().substring(4).slice(0, -5);
       }
     } else {
       timeDisplay = event.toDateString().substring(4);

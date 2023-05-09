@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require('moment-timezone');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
@@ -9,7 +10,7 @@ const noteSchema = new mongoose.Schema({
 
   time: {
     type: Date,
-    default: Date.now()
+    default: moment.tz(Date.now(), "Asia/Bangkok")
   },
 
   topic_id: ObjectId,
