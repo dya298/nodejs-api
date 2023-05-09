@@ -56,12 +56,46 @@ const ConvertTime = (node) => {
   if (!node.time) {
   } else {
     const timeNow = new Date();
+    // current
     const timeYear = timeNow.getFullYear();
+    const timeMonth = timeNow.getMonth();
+    const timeDay = timeNow.getDay();
+    const timeHour = timeNow.getHours();
+    const timeMinutes = timeNow.getMinutes();
+    const timeSec = timeNow.getSeconds();
+    // note
     const yearNote = TimeNode.getFullYear();
+    const monthNote = TimeNode.getMonth();
+    const dayNote = TimeNode.getDay();
+    const timeHourNote = TimeNode.getHours();
+    const timeMinutesNote = TimeNode.getMinutes();
+    const timeSecNote = TimeNode.getSeconds();
+    const event = new Date(
+      TimeNode.getFullYear(),
+      TimeNode.getMonth(),
+      TimeNode.getDate()
+    );
     if (timeYear - yearNote === 0) {
+      if (timeMonth - monthNote === 0) {
+        if(timeDay - dayNote === 0)
+        {
+          if(timeHour - timeHourNote === 1)
+          {
+
+          }
+          else
+          {
+            timeDisplay = ``
+          }
+        }
+        else{
+          timeDisplay = event.toDateString().substring(4).slice(0, -4);
+        }
+      } else {
+        timeDisplay = event.toDateString().substring(4).slice(0, -4);
+      }
     } else {
-      timeDisplay = `${TimeNode.getDate()} ${TimeNode.getUTCMonth()} ${TimeNode.getFullYear()}`;
-      console.log(timeDisplay);
+      timeDisplay = event.toDateString().substring(4);
     }
   }
   return timeDisplay;
