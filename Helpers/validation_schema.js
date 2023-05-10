@@ -16,6 +16,7 @@ const addNoteSchema = Joi.object({
   title: Joi.string().required(),
   topic_id: Joi.string().required(),
   user_id: Joi.string().required(),
+  image: Joi.any()
 });
 
 module.exports = {
