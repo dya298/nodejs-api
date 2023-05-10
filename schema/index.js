@@ -24,7 +24,7 @@ const {
   Page,
   convertNodeToCursor,
   convertCursorToNodeId,
-  ConvertTime
+  ConvertTime,
 } = require("../pagination");
 
 // Define Object Types
@@ -138,12 +138,13 @@ const RootQuery = new GraphQLObjectType({
       args: {
         first: { type: GraphQLInt },
         afterCursor: { type: GraphQLString },
+        topic_id: { type: GraphQLString },
       },
       async resolve(parent, args) {
-        const { first, afterCursor } = args;
+        const { first, afterCursor, topic_id } = args;
         let afterIndex = 0;
 
-        return await controllers.notes.getNotes().then((res) => {
+        return await controllers.notes.getNotes(topic_id).then((res) => {
           const data = res;
           if (typeof afterCursor === "string") {
             /* Extracting nodeId from afterCursor */
@@ -155,7 +156,10 @@ const RootQuery = new GraphQLObjectType({
             }
           }
 
-          const slicedData = data.slice(afterIndex, afterIndex + !first ? data.length : first);
+          const slicedData = data.slice(
+            afterIndex,
+            afterIndex + !first ? data.length : first
+          );
           const edges = slicedData.map((node) => ({
             node,
             time: ConvertTime(node),
@@ -168,7 +172,8 @@ const RootQuery = new GraphQLObjectType({
             startCursor = convertNodeToCursor(edges[0].node);
             endCursor = convertNodeToCursor(edges[edges.length - 1].node);
           }
-          const hasNextPage = data.length > afterIndex + (!first ? data.length : first);
+          const hasNextPage =
+            data.length > afterIndex + (!first ? data.length : first);
 
           return {
             totalCount: data.length,

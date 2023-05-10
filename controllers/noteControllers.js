@@ -2,8 +2,15 @@
 const Note = require("../Models/Notes/notesModel");
 const cloudinary = require("../utils/cloudinary");
 // Get all notes
-exports.getNotes = async () => {
+exports.getNotes = async (topic_id) => {
   try {
+    console.log(topic_id);
+    if (topic_id) {
+      const notes = await Note.find({ topic_id: topic_id }).sort({
+        time: "desc",
+      });
+      return notes;
+    }
     const notes = await Note.find().sort({ time: "desc" });
     return notes;
   } catch (err) {
@@ -55,6 +62,14 @@ exports.deleteNote = async (req) => {
   try {
     const id = req.params === undefined ? req.id : req.params.id;
     const note = await Note.findByIdAndRemove(id);
+    console.log(note);
+    const { cloudinary_id } = note;
+    if (cloudinary_id) {
+      await cloudinary.uploader.destroy(cloudinary_id, (result, error) => {
+        if (error) console.log(error);
+        return note;
+      });
+    }
     return note;
   } catch (err) {
     console.log(err);

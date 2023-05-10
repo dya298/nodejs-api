@@ -85,7 +85,7 @@ const ConvertTime = (node) => {
             if (timeMinutes - timeMinutesNote === 0) {
               timeDisplay = `Just now`;
             } else {
-              timeDisplay = `${timeMinutes - timeMinutesNote}mins ago`;
+              timeDisplay = `${timeMinutes - timeMinutesNote} mins ago`;
             }
           } else {
             timeDisplay = `${timeHour - timeHourNote}h ago`;
