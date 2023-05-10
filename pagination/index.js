@@ -8,11 +8,6 @@ const {
   GraphQLList,
 } = graphql;
 
-var current = new Date();
-const timeStamp = new Date(Date.UTC(current.getFullYear(), 
-current.getMonth(),current.getDate(),current.getHours(), 
-current.getMinutes(),current.getSeconds(), current.getMilliseconds()));
-
 const Edge = (itemType) => {
   return new GraphQLObjectType({
     name: "EdgeType",
@@ -56,12 +51,14 @@ const convertCursorToNodeId = (cursor) => {
 };
 
 const ConvertTime = (node) => {
+  var current = new Date();
+  const timeStamp = new Date(Date.UTC(current.getFullYear(), 
+  current.getMonth(),current.getDate(),current.getHours(), 
+  current.getMinutes(),current.getSeconds(), current.getMilliseconds()));
   let timeDisplay = "";
   const TimeNode = new Date(node.time);
-  console.log(TimeNode);
   if (!node.time) {
   } else {
-    console.log(timeStamp);
     // current
     const timeYear = timeStamp.getFullYear();
     const timeMonth = timeStamp.getMonth();
@@ -79,6 +76,8 @@ const ConvertTime = (node) => {
       TimeNode.getMonth(),
       TimeNode.getDate()
     );
+    console.log(timeMinutes);
+    console.log(timeMinutesNote);
     if (timeYear - yearNote === 0) {
       if (timeMonth - monthNote === 0) {
         if (timeDay - dayNote === 0) {
