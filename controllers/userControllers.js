@@ -1,10 +1,10 @@
-const Note = require("../Models/Notes/notesModel");
+const User = require("../Models/Users/userModel");
 
 exports.getUserNote = async (req) => {
   try {
     const id = req.params === undefined ? req.id : req.params.id;
 
-    const users = await Note.find({ user_id: id });
+    const users = await User.findById(id);
 
     return users;
   } catch (err) {

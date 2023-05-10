@@ -1,7 +1,11 @@
 const mongoose = require("mongoose");
-const moment = require('moment-timezone');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
+
+var current = new Date();
+const timeStamp = new Date(Date.UTC(current.getFullYear(), 
+current.getMonth(),current.getDate(),current.getHours(), 
+current.getMinutes(),current.getSeconds(), current.getMilliseconds()));
 
 const noteSchema = new mongoose.Schema({
   title: String,
@@ -10,7 +14,7 @@ const noteSchema = new mongoose.Schema({
 
   time: {
     type: Date,
-    default: moment.tz(Date.now(), "Asia/Bangkok")
+    default: timeStamp,
   },
 
   topic_id: ObjectId,
@@ -19,7 +23,7 @@ const noteSchema = new mongoose.Schema({
 
   profile_img: String,
 
-  cloudinary_id: String
+  cloudinary_id: String,
 });
 
 module.exports = mongoose.model("Notes", noteSchema);

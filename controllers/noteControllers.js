@@ -4,10 +4,10 @@ const cloudinary = require("../utils/cloudinary");
 // Get all notes
 exports.getNotes = async () => {
   try {
-    const notes = await Note.find();
+    const notes = await Note.find().sort({ time: "desc" });
     return notes;
   } catch (err) {
-    console.log(err); 
+    console.log(err);
   }
 };
 

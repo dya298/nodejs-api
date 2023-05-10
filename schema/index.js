@@ -56,10 +56,10 @@ const noteType = new GraphQLObjectType({
     },
 
     user: {
-      type: topicType,
+      type: userType,
 
       async resolve(parent, args) {
-        return await controllers.topics.getSingleTopic({ id: parent.topic_id });
+        return await controllers.users.getUserNote({ id: parent.user_id });
       },
     },
   }),
@@ -103,10 +103,13 @@ const userType = new GraphQLObjectType({
 
     emailToken: { type: GraphQLString },
 
+    image: { type: GraphQLString },
+
     notes: {
       type: new GraphQLList(noteType),
 
       async resolve(parent, args) {
+        console.log(parent._id);
         return await controllers.users.getUserNote({ id: parent._id });
       },
     },

@@ -8,6 +8,11 @@ const {
   GraphQLList,
 } = graphql;
 
+var current = new Date();
+const timeStamp = new Date(Date.UTC(current.getFullYear(), 
+current.getMonth(),current.getDate(),current.getHours(), 
+current.getMinutes(),current.getSeconds(), current.getMilliseconds()));
+
 const Edge = (itemType) => {
   return new GraphQLObjectType({
     name: "EdgeType",
@@ -53,32 +58,27 @@ const convertCursorToNodeId = (cursor) => {
 const ConvertTime = (node) => {
   let timeDisplay = "";
   const TimeNode = new Date(node.time);
-  TimeNode.setHours(TimeNode.getHours() + 7);
   console.log(TimeNode);
   if (!node.time) {
   } else {
-    const timeNow = new Date();
+    console.log(timeStamp);
     // current
-    const timeYear = timeNow.getFullYear();
-    const timeMonth = timeNow.getMonth();
-    const timeDay = timeNow.getDay();
-    const timeHour = timeNow.getHours();
-    const timeMinutes = timeNow.getMinutes();
-    const timeSec = timeNow.getSeconds();
+    const timeYear = timeStamp.getFullYear();
+    const timeMonth = timeStamp.getMonth();
+    const timeDay = timeStamp.getDay();
+    const timeHour = timeStamp.getHours();
+    const timeMinutes = timeStamp.getMinutes();
     // note
     const yearNote = TimeNode.getFullYear();
     const monthNote = TimeNode.getMonth();
     const dayNote = TimeNode.getDay();
-    const timeHourNote = TimeNode.getHours() - 7;
+    const timeHourNote = TimeNode.getHours();
     const timeMinutesNote = TimeNode.getMinutes();
-    const timeSecNote = TimeNode.getSeconds();
     const event = new Date(
       TimeNode.getFullYear(),
       TimeNode.getMonth(),
       TimeNode.getDate()
     );
-    console.log(timeSec);
-    console.log(timeSecNote);
     if (timeYear - yearNote === 0) {
       if (timeMonth - monthNote === 0) {
         if (timeDay - dayNote === 0) {
