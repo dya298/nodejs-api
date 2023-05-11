@@ -16,14 +16,15 @@ const addNoteSchema = Joi.object({
   title: Joi.string().required(),
   topic_id: Joi.string().required(),
   user_id: Joi.string().required(),
+  desc: Joi.string().required(),
   image: Joi.any(),
 });
 
 const updateNoteSchema = Joi.object({
   id: Joi.string().required(),
-  topic_id: Joi.string().required(),
-  title: Joi.string().required(),
-  desc: Joi.string().required(),
+  topic_id: Joi.string(),
+  title: Joi.string(),
+  desc: Joi.string(),
   image: Joi.any(),
   cloudinary_id: Joi.string(),
 });
