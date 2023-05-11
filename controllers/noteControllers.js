@@ -46,12 +46,23 @@ exports.addNote = async (req, file) => {
 };
 
 // Update an existing note
-exports.updateNote = async (req) => {
+exports.updateNote = async (req, file) => {
   try {
     const id = req.params === undefined ? req.id : req.params.id;
     const updateData = req.params === undefined ? req : req.params;
     const update = await Note.findByIdAndUpdate(id, updateData, { new: true });
-    return update;
+    const { cloudinary_id } = update;
+    if (cloudinary_id) {
+      await cloudinary.uploader.destroy(cloudinary_id, async (rs, error) => {
+        if (error) console.log(error);
+        if (file != null) {
+          const result = await cloudinary.uploader.upload(file);
+          update.profile_img = result.secure_url;
+          update.cloudinary_id = result.public_id;
+          await update.save();
+        }
+      });
+    }
   } catch (err) {
     console.log(err);
   }
