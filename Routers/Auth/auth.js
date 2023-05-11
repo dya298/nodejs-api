@@ -100,7 +100,9 @@ router.post("/login", async (req, res, next) => {
     }
     const isMatch = user.isValidPassword(resultSchema.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Email or password is not valid" });
+      return res
+        .status(400)
+        .json({ message: "Email or password is not valid" });
     }
 
     const accessToken = await signAccessToken(user.id);

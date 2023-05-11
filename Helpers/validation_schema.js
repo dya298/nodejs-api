@@ -21,6 +21,7 @@ const addNoteSchema = Joi.object({
 
 const updateNoteSchema = Joi.object({
   id: Joi.string().required(),
+  topic_id: Joi.string().required(),
   title: Joi.string().required(),
   desc: Joi.string().required(),
   image: Joi.any(),
